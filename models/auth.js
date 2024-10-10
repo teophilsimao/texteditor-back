@@ -44,7 +44,7 @@ const auth = {
             const newUser = { email, password: hash, verificationCode, verified: false };
             await db.collection.insertOne(newUser);
 
-            const verificationUrl = `https://www.student.bth.se/~tesi23/editor/#/verify-email?code=${verificationCode}&email=${email}`;
+            const verificationUrl = `http://localhost:3000/#/verify-email?code=${verificationCode}&email=${email}`;
 
             const msg = {
                 to: email,
