@@ -8,11 +8,11 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-const dataRoutes = require('./route/documents');
-const authRoutes = require('./route/auth');
+const documentRoute = require('./route/documents');
+const authRoute = require('./route/auth');
 
-app.use('/documents', dataRoutes);
-app.use('/', authRoutes);
+app.use('/documents', documentRoute);
+app.use('/', authRoute);
 
 const server = app.listen(port, () => {
     console.log('API running on port ' + port);
