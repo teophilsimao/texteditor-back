@@ -6,7 +6,7 @@ const router = express.Router();
 // Check for token authentication
 router.use(auth.checkToken);
 
-// Get all documents for the loggedin user
+// Get all documents
 router.get('/', async (req, res) => {
     try {
         const userEmail = req.user.email;

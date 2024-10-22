@@ -49,7 +49,7 @@ const auth = {
             const msg = {
                 to: email,
                 from: 'anteo.ssr@gmail.com',
-                subject: 'Email Verification by SSR editor from anteo(Anton & Teophil)',
+                subject: 'Email Verification by SSR editor from Anteo  projekt(Anton & Teophil)',
                 text: `Please verify your email by clicking the link: ${verificationUrl}`,
             };
 
