@@ -1,9 +1,9 @@
 const mongo = require('mongodb').MongoClient;
-const collectionName = 'documents';
+// const collectionName = 'documents';
 require('dotenv').config();
 
 const database = {
-    getDb: async function getDb() {       
+    getDb: async function getDb(collectionName) {       
         let dsn = `mongodb+srv://${process.env.USER_NAME}:${process.env.USER_PASSWORD}@cluster0.zarw2.mongodb.net/texteditor?retryWrites=true&w=majority&appName=Cluster0"`
 
         if (process.env.NODE_ENV === 'test') {
@@ -12,7 +12,7 @@ const database = {
 
         const client = await mongo.connect(dsn);
         const db = await client.db();
-        const collection = await db.collection(collectionName);
+        const collection = collectionName ? await db.collection(collectionName) : null;
 
         return {
             db: db,

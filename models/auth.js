@@ -1,3 +1,4 @@
+//auth.js models
 const database = require("../database/database");
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
@@ -26,7 +27,7 @@ const auth = {
 
         let db;
         try {
-            db = await database.getDb();
+            db = await database.getDb('users');
             const existingUser = await db.collection.findOne({ email });
             if (existingUser) {
                 return res.status(409).json({
@@ -88,7 +89,7 @@ const auth = {
 
         let db;
         try {
-            db = await database.getDb();
+            db = await database.getDb('users');
             const user = await db.collection.findOne({ email });
 
             if (!user) {
@@ -146,7 +147,7 @@ const auth = {
 
         let db;
         try {
-            db = await database.getDb();
+            db = await database.getDb('users');
             const user = await db.collection.findOne({ email });
 
             if (!user) {

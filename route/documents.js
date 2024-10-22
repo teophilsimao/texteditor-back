@@ -1,6 +1,7 @@
 const express = require('express');
 const Data = require('../models/documents');
 const auth = require('../models/auth');
+const database = require('../database/database');
 const router = express.Router();
 
 // Check for token authentication
@@ -82,5 +83,25 @@ router.delete('/:id', async (req, res) => {
         res.status(500).json({ message: 'Error deleting document', error });
     }
 });
+
+// share document
+router.post('/:id/share', async (req, res) => {
+    const email = req.body.email;
+    const userEmail = req.user.email;
+
+    try {
+        const result = await Data.share(req.params.id, email, userEmail);
+        return res.status(200).json(result);
+    } catch (e) {
+        console.log(e)
+        return res.status(404).json({
+            errors: {
+                status: 404,
+                title: "Error",
+                detail: e.message
+            }
+        });
+    } 
+})
 
 module.exports = router;
