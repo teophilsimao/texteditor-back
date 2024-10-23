@@ -6,7 +6,8 @@ const sgMail = require('@sendgrid/mail');
 
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
-const Data = {
+// D
+const docs = {
     getAll: async (userEmail) => {
         const db = await database.getDb('documents');
         return await db.collection.find({ 
@@ -96,4 +97,4 @@ const Data = {
     }
 };
 
-module.exports = Data;
+module.exports = docs;
