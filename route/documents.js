@@ -1,7 +1,8 @@
+// Documents route
+
 const express = require('express');
-const Data = require('../models/documents');
+const docs = require('../models/documents');
 const auth = require('../models/auth');
-const database = require('../database/database');
 const router = express.Router();
 
 // Check for token authentication
@@ -11,7 +12,7 @@ router.use(auth.checkToken);
 router.get('/', async (req, res) => {
     try {
         const userEmail = req.user.email;
-        const documents = await Data.getAll(userEmail);
+        const documents = await docs.getAll(userEmail);
         res.status(200).json(documents);
     } catch (error) {
         res.status(500).json({ message: 'Error fetching documents', error });
@@ -22,7 +23,7 @@ router.get('/', async (req, res) => {
 router.get('/:id', async (req, res) => {
     try {
         const userEmail = req.user.email;
-        const document = await Data.getOne(req.params.id, userEmail);
+        const document = await docs.getOne(req.params.id, userEmail);
         
         if (!document) {
             return res.status(404).json({ message: 'Document not found or you do not have permission.' });
@@ -49,8 +50,8 @@ router.post('/', async (req, res) => {
             createdAt: new Date()
         };
 
-        const docId = await Data.create(document, req.user.email);
-        const newDoc = await Data.getOne(docId, req.user.email);
+        const docId = await docs.create(document, req.user.email);
+        const newDoc = await docs.getOne(docId, req.user.email);
         res.status(201).json(newDoc);
     } catch (error) {
         res.status(500).json({ message: 'Error creating document', error });
@@ -66,7 +67,7 @@ router.put('/:id', async (req, res) => {
             updatedAt: new Date()
         };
 
-        await Data.update(req.params.id, updatedData, userEmail);
+        await docs.update(req.params.id, updatedData, userEmail);
         res.json({ message: 'Document updated.' });
     } catch (error) {
         res.status(500).json({ message: 'Error updating document', error });
@@ -77,20 +78,20 @@ router.put('/:id', async (req, res) => {
 router.delete('/:id', async (req, res) => {
     try {
         const userEmail = req.user.email;
-        await Data.delete(req.params.id, userEmail);
+        await docs.delete(req.params.id, userEmail);
         res.json({ message: 'Document deleted.' });
     } catch (error) {
         res.status(500).json({ message: 'Error deleting document', error });
     }
 });
 
-// share document
+// Share a document
 router.post('/:id/share', async (req, res) => {
     const email = req.body.email;
     const userEmail = req.user.email;
 
     try {
-        const result = await Data.share(req.params.id, email, userEmail);
+        const result = await docs.share(req.params.id, email, userEmail);
         return res.status(200).json(result);
     } catch (e) {
         console.log(e)

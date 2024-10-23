@@ -1,4 +1,5 @@
-//auth.js models
+// Auth models
+
 const database = require("../database/database");
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');

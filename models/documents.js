@@ -1,4 +1,5 @@
-// documents.js models 
+// Documents models
+
 const mongo = require('mongodb');
 const database = require('../database/database');
 const sgMail = require('@sendgrid/mail');
@@ -56,9 +57,7 @@ const Data = {
     },
 
     share: async (id, email, userEmail) => {
-        const { db, collection, client }  = await database.getDb('documents')
-        // const docsCollection = db.collection('documents');
-        // const userCollection = db.collection('users');
+        const { db, collection, client }  = await database.getDb('documents');
         const docId = new mongo.ObjectId(id);
         const document = await collection.findOne({ _id: docId, userEmail});
 
@@ -66,7 +65,7 @@ const Data = {
             throw new Error("document not found");
         }
 
-        const userCollection = db.collection('users')
+        const userCollection = db.collection('users');
         const collaborator = await userCollection.findOne({email});
         if (collaborator) {
             await collection.updateOne(

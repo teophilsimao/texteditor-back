@@ -1,3 +1,5 @@
+// Database
+
 const mongo = require('mongodb').MongoClient;
 // const collectionName = 'documents';
 require('dotenv').config();
