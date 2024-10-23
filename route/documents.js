@@ -91,8 +91,8 @@ router.post('/:id/share', async (req, res) => {
     const userEmail = req.user.email;
 
     try {
-        const result = await docs.share(req.params.id, email, userEmail);
-        return res.status(200).json(result);
+        const response = await docs.share(req.params.id, email, userEmail);
+        return res.status(200).json(response);
     } catch (e) {
         console.log(e)
         return res.status(404).json({
@@ -103,6 +103,29 @@ router.post('/:id/share', async (req, res) => {
             }
         });
     } 
+})
+
+// Code route!!
+router.post('/:id/codemode', async (req, res) => {
+    const userEmail = req.user.email;
+    const code = req.body;
+
+    try {
+        const document = await docs.getOne(req.params.id, userEmail);
+
+        console.log(document.type)
+        console.log(code)
+        
+        if(!document || document.type !== 'code') {
+            return res.status(404).json({ message: 'Document not found or not a code document.' });
+        }
+
+        const response = await docs.codeMode(code);
+        res.status(200).json(response);
+    } catch (error) {
+        console.error('Error executing code:', error);
+        res.status(500).json({ message: 'Error executing code', error });
+    }
 })
 
 module.exports = router;
