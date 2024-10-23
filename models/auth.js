@@ -12,7 +12,10 @@ const jwtSecret = process.env.JWT_SECRET;
 
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
+//User authentication
 const auth = {
+
+    //Processes a registration
     register: async (req, res) => {
         const { email, password } = req.body;
 
@@ -75,6 +78,7 @@ const auth = {
         }
     },
 
+    //Verifies the user email
     verifyEmail: async (req, res) => {
         const { code, email } = req.query;
 
@@ -133,6 +137,7 @@ const auth = {
         }
     },
 
+    //Processes user login
     login: async (req, res) => {
         const { email, password } = req.body;
 
@@ -204,6 +209,7 @@ const auth = {
         }
     },
 
+    //Checks and Verifies the users access token
     checkToken: (req, res, next) => {
         const token = req.headers['x-access-token'];
 
