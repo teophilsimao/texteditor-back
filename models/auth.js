@@ -3,9 +3,7 @@
 const database = require("../database/database");
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const nodemailer = require('nodemailer');
 const crypto = require('crypto');
-// const mailgun = require('nodemailer-mailgun-transport');
 const sgMail = require('@sendgrid/mail');
 
 const jwtSecret = process.env.JWT_SECRET;
@@ -65,6 +63,92 @@ const auth = {
                 }
             });
 
+        } catch (e) {
+            return res.status(500).json({
+                errors: {
+                    status: 500,
+                    title: "Database error",
+                    detail: e.message
+                }
+            });
+        } finally {
+            await db.client.close();
+        }
+    },
+
+    //Request a password reset link
+    requestResetPassword: async (req, res) => {
+        const { email } = req.body;
+        console.log("Request received for password reset for email:", email);
+
+        let db;
+        try {
+            db = await database.getDb('users');
+            const user = await db.collection.findOne( { email } );
+            if (!user) {
+                return res.status(404).json({ errors: { status: 404, title: 'User not found', detail: 'User not found' } });
+            }
+            const resetToken = crypto.randomBytes(32).toString('hex');
+            const resetTokenExp = Date.now + 3600000;
+
+            await  db.collection.updateOne(
+                {email},
+                {$set: {resetToken, resetTokenExp}}
+            );
+
+            const resetUrl = `http://localhost:3000/#/reset-password?token=${resetToken}&email=${email}`
+            const msg = {
+                to: email,
+                from: 'anteo.ssr@gmail.com',
+                subject: 'Request for new password',
+                text: `Click the lin to reset your password: ${resetUrl}`
+            }
+
+            await sgMail.send(msg);
+            console.log("Reset email sent to:", email);
+
+            res.status(200).json({ message: 'Reset link sent to your email' });
+        } catch (e) {
+            console.error("Error handling password reset:", e);
+            return res.status(500).json({
+                errors: {
+                    status: 500,
+                    title: 'Failed Database request',
+                    detail: e.message
+                }
+            })
+        } finally {
+            await db.client.close();
+        }
+    },
+
+    resetPassword: async (req, res) => {
+        const { email, newPassword, token } = req.body;
+        console.log("Reset password request received for:", email);
+
+        let db;
+        try {
+            db = await database.getDb('users');
+            const user = await db.collection.findOne({ email });
+
+            if (user.resetToken !== token || user.resetTokenExp < Date.now()) {
+                return res.status(400).json({
+                    errors: {
+                        status: 400,
+                        title: 'token invalid/expired',
+                        detail:'token invalid/expired'
+                    }
+                });
+            }
+
+            const hash = await bcrypt.hash(newPassword, 10);
+
+            await db.collection.updateOne(
+                { email },
+                { $set: {password: hash, resetToken: null, resetTokenExp: null}}
+            )
+            res.status(200).json({ message: 'Password successfully reset.' });
+            console.log('password fully reset');
         } catch (e) {
             return res.status(500).json({
                 errors: {

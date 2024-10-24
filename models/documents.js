@@ -67,7 +67,7 @@ const docs = {
         const docId = new mongo.ObjectId(id);
         const document = await collection.findOne({_id: docId})
         if (document.userEmail === userEmail) {
-            await db.collection.findOneAndDelete({ _id: docId, userEmail });
+            await collection.findOneAndDelete({ _id: docId, userEmail });
             console.log('Document has been removed')
         } else {
             await collection.updateOne(
