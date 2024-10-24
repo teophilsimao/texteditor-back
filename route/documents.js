@@ -38,7 +38,7 @@ router.get('/:id', async (req, res) => {
 // Create a document
 router.post('/', async (req, res) => {
     try {
-        const { title, content } = req.body;
+        const { title, content, type } = req.body;
 
         if (!title) {
             return res.status(400).json({ message: 'Title is required.' });
@@ -47,6 +47,7 @@ router.post('/', async (req, res) => {
         const document = {
             title,
             content,
+            type,
             createdAt: new Date()
         };
 
