@@ -16,6 +16,7 @@ const auth = {
     //Processes a registration
     register: async (req, res) => {
         const { email, password } = req.body;
+        console.log('you are trying to register')
 
         if (!email || !password) {
             return res.status(400).json({
@@ -57,6 +58,7 @@ const auth = {
             };
 
             await sgMail.send(msg);
+            console.log('we sent');
             return res.status(201).json({
                 data: {
                     message: "User successfully registered. Please check your email for verification."
