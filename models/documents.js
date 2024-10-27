@@ -13,7 +13,7 @@ const docs = {
     //Gets all the documents
     getAll: async (userEmail) => {
         const db = await database.getDb('documents');
-        console.log('connected to database');
+        // console.log('connected to database');
         return await db.collection.find({ 
             $or: [
                 {userEmail},
@@ -26,7 +26,7 @@ const docs = {
     getOne: async (id, userEmail) => {
         const db = await database.getDb('documents');
         const docId = new mongo.ObjectId(id);
-        console.log(`founf document ${docId}`);
+        // console.log(`founf document ${docId}`);
         return await db.collection.findOne({ 
             _id: docId, 
             $or: [
@@ -45,7 +45,7 @@ const docs = {
             createdAt: new Date(),
         };
         const response = await db.collection.insertOne(newDocument);
-        console.log(`New document created with ID: ${response.insertedId}`)
+        // console.log(`New document created with ID: ${response.insertedId}`)
         return response.insertedId;
     },
 
@@ -53,7 +53,7 @@ const docs = {
     update: async (id, updatedData, userEmail) => {
         const db = await database.getDb('documents');
         const docId = new mongo.ObjectId(id);
-        console.log(`updating document ${docId}`);
+        // console.log(`updating document ${docId}`);
         await db.collection.findOneAndUpdate(
             { _id: docId, $or: [{userEmail}, {collaborator: userEmail}] },
             { $set: updatedData },
@@ -68,13 +68,13 @@ const docs = {
         const document = await collection.findOne({_id: docId})
         if (document.userEmail === userEmail) {
             await collection.findOneAndDelete({ _id: docId, userEmail });
-            console.log('Document has been removed')
+            // console.log('Document has been removed')
         } else {
             await collection.updateOne(
                 {_id: docId},
                 {$pull: {collaborator: userEmail}}
             );
-            console.log('You are have been removed from the document as a collaborator!');
+            // console.log('You are have been removed from the document as a collaborator!');
         }
     },
 
@@ -105,7 +105,7 @@ const docs = {
                 { _id: docId },
                 { $addToSet: {collaborator: email}}
             );
-            console.log('Document shared');
+            // console.log('Document shared');
         } else {
             const invitationUrl = `http://localhost:3000/#/register?email=${email}`;
             const msg = {
@@ -120,7 +120,7 @@ const docs = {
                 { _id: docId },
                 { $addToSet: { collaborator: email } }
             );
-            console.log('Document shared');
+            // console.log('Document shared');
         }
     },
 
